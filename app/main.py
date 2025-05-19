@@ -8,6 +8,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import ORJSONResponse
 from sqlalchemy.orm import Session
 
+from app.client.apis import router as client_router
 from app.common.dependencies import get_session
 from app.common.exceptions import (
     BadGatewayError,
@@ -21,11 +22,10 @@ from app.core.handlers import (
     internal_server_error_exception_handler,
     request_validation_exception_handler,
 )
-from app.core.tags import RouteTags
-from app.sample_module.apis import router as sample_router
+from app.core.tags import get_tags
 
 # Globals
-tags = RouteTags()
+tags = get_tags()
 
 
 # Lifespan (startup, shutdown)
@@ -89,4 +89,4 @@ async def health(_: Session = Depends(get_session)):
 
 
 # Routers
-app.include_router(sample_router, tags=[tags.SAMPLE])
+app.include_router(client_router, tags=[tags.CLIENT])
