@@ -23,6 +23,7 @@ from app.core.handlers import (
     request_validation_exception_handler,
 )
 from app.core.tags import get_tags
+from app.store.apis import router as store_router
 
 # Globals
 tags = get_tags()
@@ -90,3 +91,4 @@ async def health(_: Session = Depends(get_session)):
 
 # Routers
 app.include_router(client_router, tags=[tags.CLIENT])
+app.include_router(store_router, tags=[tags.STORE])

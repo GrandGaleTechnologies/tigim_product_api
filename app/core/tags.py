@@ -8,8 +8,11 @@ class RouteTags(BaseModel):
     Base model for app route tags
     """
 
-    # Module Tags
+    # Client Tags
     CLIENT: str = "Client APIs"
+
+    # Store Tags
+    STORE: str = "Store APIs"
 
 
 @lru_cache
