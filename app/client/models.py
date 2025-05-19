@@ -17,3 +17,16 @@ class Client(DBBase):
     hashed_secret = Column(String, nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.now, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.now, nullable=False)
+
+
+class ClientAPIKey(DBBase):
+    """
+    Database model for client api keys
+    """
+
+    __tablename__ = "client_apikeys"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    hashed_key = Column(String, nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=datetime.now, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.now, nullable=False)
