@@ -62,7 +62,6 @@ class InternalMagentoClient:
 
         # Return from cache if fresh
         if cached and (now - cached[0]) < self._cache_ttl_seconds:
-            print(f"Returning cached {cached}")
             return cached[1]
 
         # Make request
