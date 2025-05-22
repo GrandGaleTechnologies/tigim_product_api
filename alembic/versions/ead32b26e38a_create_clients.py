@@ -23,8 +23,8 @@ def upgrade() -> None:
     op.create_table(
         "clients",
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column("client_id", sa.String(20), unique=True, nullable=False),
-        sa.Column("hashed_secret", sa.String, nullable=False),
+        sa.Column("name", sa.String(255), nullable=False),
+        sa.Column("api_key", sa.String(30), unique=True, nullable=False),
         sa.Column(
             "updated_at",
             sa.DateTime(timezone=True),
