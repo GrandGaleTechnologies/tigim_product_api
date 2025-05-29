@@ -1,8 +1,12 @@
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
 
+######################################################################
+# Unified Product
+######################################################################
 class UnifiedProductPrice(BaseModel):
     """
     Base schema for unified product representation prices
@@ -51,3 +55,20 @@ class UnifiedProduct(BaseModel):
             - Remove all None fields
         """
         return [v for v in values if v]
+
+
+######################################################################
+# Store
+######################################################################
+class StoreSummary(BaseModel):
+    """
+    Base schema for store summaries
+    """
+
+    id: int = Field(description="The ID of the store")
+    name: str = Field(description="The name of the store")
+    type: Literal["magento"] = Field(description="The store's type")
+    updated_at: datetime | None = Field(
+        description="The time the store was last updated"
+    )
+    created_at: datetime = Field(description="The time the store was created")
