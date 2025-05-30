@@ -29,13 +29,22 @@ class UnifiedProductDescription(BaseModel):
     content: str = Field(description="The content of the description")
 
 
+class UnifiedProductImage(BaseModel):
+    """
+    Base schema for unified product images
+    """
+
+
 class UnifiedProduct(BaseModel):
     """
     Base schema for unified product representations
     """
 
     id: str = Field(description="The ID of the product")
+    sku: str = Field(description="The product's sku")
     name: str = Field(description="The name of the products")
+    images: list[str] = Field(description="The list of images")
+    link: str | None = Field(description="The product's link")
     description: UnifiedProductDescription = Field(
         description="The description of the product"
     )

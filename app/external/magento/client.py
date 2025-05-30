@@ -4,6 +4,7 @@ from typing import Any
 
 from app.common.exceptions import BadGatewayError
 from app.external._request import InternalRequestClient
+from app.external.magento import utils
 from app.store.schemas.base import (
     UnifiedProduct,
     UnifiedProductDescription,
@@ -116,27 +117,48 @@ class InternalMagentoClient:
         # Form data
         data = resp.json()
 
-        return [
-            UnifiedProduct(
-                id=str(prod["id"]),
-                name=prod["name"],
-                description=UnifiedProductDescription(
-                    format="html",
-                    content=[
-                        attr
-                        for attr in prod["custom_attributes"]
-                        if attr["attribute_code"] == "description"
-                    ][0]["value"],
-                ),
-                price=UnifiedProductPrice(price=prod["price"]),
-                categories=[
-                    await self.get_category_name(id=cat["category_id"], raise_exc=False)
-                    for cat in prod["extension_attributes"]["category_links"]
-                ],
-                type="magentoproduct",
+        products = []
+        for prod in data["items"]:
+            # Form permalink
+            link = None
+            for attr in prod["custom_attributes"]:
+                if attr["attribute_code"] == "url_key":
+                    link = (
+                        self.base_url.removesuffix("rest/V1") + attr["value"] + ".html"
+                    )
+
+            products.append(
+                UnifiedProduct(
+                    id=str(prod["id"]),
+                    sku=prod["sku"],
+                    name=prod["name"],
+                    images=[
+                        await utils.form_magento_image_url(
+                            base_url=self.base_url, filepath=img["file"]
+                        )
+                        for img in prod["media_gallery_entries"]
+                    ],
+                    link=link,
+                    description=UnifiedProductDescription(
+                        format="html",
+                        content=[
+                            attr
+                            for attr in prod["custom_attributes"]
+                            if attr["attribute_code"] == "description"
+                        ][0]["value"],
+                    ),
+                    price=UnifiedProductPrice(price=prod["price"]),
+                    categories=[
+                        await self.get_category_name(
+                            id=cat["category_id"], raise_exc=False
+                        )
+                        for cat in prod["extension_attributes"]["category_links"]
+                    ],
+                    type="magentoproduct",
+                )
             )
-            for prod in data["items"]
-        ], await self.get_pagination_metadata(
+
+        return products, await self.get_pagination_metadata(
             response={
                 "search_criteria": data["search_criteria"],
                 "total_count": data["total_count"],
