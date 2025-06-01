@@ -73,6 +73,44 @@ class UnifiedProduct(BaseModel):
 ######################################################################
 # Store
 ######################################################################
+class MagentoStoreAuthKeys(BaseModel):
+    """
+        Base schema for store auth keys
+        {
+      "base_url": "https://magento.tigim.co",
+      "consumer_key": "rzq7mqfnmft7op1ubw76eadwip278ds6",
+      "consumer_secret": "c3x793fjhdu0u6nr2gnhv33vfzuc3jja",
+      "access_token": "3tz6l9s5352mq48vwcytt3d72jjmx51z",
+      "access_token_secret": "8pro69xfcb65lagczw9q9a00c5sa0twu"
+    }
+    """
+
+    type: Literal["magento"] = Field(description="The store auth-key type")
+    base_url: str = Field(description="The magento base url")
+    # NOTE: intentional lack of 'Field'
+    consumer_key: str
+    consumer_secret: str
+    access_token: str
+    access_token_secret: str
+
+
+class Store(BaseModel):
+    """
+    Base schema for stores
+    """
+
+    id: int = Field(description="The ID of the store")
+    name: str = Field(description="The name of the store")
+    type: Literal["magento"] = Field(description="The store's type")
+    auth_keys: MagentoStoreAuthKeys = Field(
+        discriminator="type", description="The store's auth keys"
+    )
+    updated_at: datetime | None = Field(
+        description="The time the store was last updated"
+    )
+    created_at: datetime = Field(description="The time the store was created")
+
+
 class StoreSummary(BaseModel):
     """
     Base schema for store summaries

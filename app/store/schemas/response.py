@@ -1,7 +1,7 @@
 from pydantic import Field
 
-from app.common.schemas import PaginatedResponseSchema
-from app.store.schemas.base import StoreSummary, UnifiedProduct
+from app.common.schemas import PaginatedResponseSchema, ResponseSchema
+from app.store.schemas.base import Store, StoreSummary, UnifiedProduct
 
 
 ######################################################################
@@ -18,6 +18,14 @@ class PaginatedUnifiedProductListResponse(PaginatedResponseSchema):
 ######################################################################
 # Store
 ######################################################################
+class StoreResponse(ResponseSchema):
+    """
+    Response schema for stores
+    """
+
+    data: Store = Field(description="The details of the store")
+
+
 class PaginatedStoreListResponse(PaginatedResponseSchema):
     """
     Paginated response schema for stores

@@ -10,6 +10,7 @@ from app.core.settings import get_settings
 from app.external._request import InternalRequestClient
 from app.external.magento import utils
 from app.external.magento.types import MagentoProductType
+from app.store.schemas import base as base_ss
 
 # Configs
 settings = get_settings()
@@ -24,13 +25,35 @@ class InternalMagentoClient:
     """
 
     def __init__(self, base_url: str, access_token: str) -> None:
-        self.base_url = base_url
+        self.base_url = base_url + "/rest/V1"
         self.access_token = access_token
         self.req = InternalRequestClient(base_url=self.base_url)
 
         # Internal cache: category_id -> (timestamp, name)
         self._category_cache: dict[str, tuple[float, str]] = {}
         self._cache_ttl_seconds = 30 * 60  # 30 minutes
+
+    @classmethod
+    async def verify_credentials(cls, creds: base_ss.MagentoStoreAuthKeys):
+        """
+        Verify magento credentials
+
+        NOTE: this will always pass if anonymous access is enabled
+        """
+        # Form req
+        req = InternalRequestClient(base_url=creds.base_url + "/rest/V1")
+
+        # Make request
+        resp = await req.get(
+            "/categories?searchCriteria[pageSize]=1&searchCriteria[currentPage]=1",
+            headers={"Authorization": f"Bearer {creds.access_token}"},
+        )
+
+        # Check success
+        if resp.status_code != 200:
+            return False
+
+        return True
 
     async def get_pagination_metadata(self, response: dict[str, Any], count: int):
         """

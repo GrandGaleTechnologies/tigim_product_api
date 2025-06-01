@@ -14,7 +14,7 @@ class Store(DBBase):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     client_id = Column(
-        String(20), ForeignKey("clients.id", ondelete="CASCADE"), nullable=False
+        Integer, ForeignKey("clients.id", ondelete="CASCADE"), nullable=False
     )
     name = Column(String(255), nullable=False)
     type = Column(String(20), nullable=False)
