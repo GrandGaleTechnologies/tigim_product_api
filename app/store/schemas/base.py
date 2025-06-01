@@ -34,6 +34,9 @@ class UnifiedProductImage(BaseModel):
     Base schema for unified product images
     """
 
+    url: str = Field(description="The URL of the image")
+    label: str | None = Field(description="The image label")
+
 
 class UnifiedProduct(BaseModel):
     """
@@ -43,12 +46,13 @@ class UnifiedProduct(BaseModel):
     id: str = Field(description="The ID of the product")
     sku: str = Field(description="The product's sku")
     name: str = Field(description="The name of the products")
-    images: list[str] = Field(description="The list of images")
+    images: list[UnifiedProductImage] = Field(description="The list of images")
     link: str | None = Field(description="The product's link")
     description: UnifiedProductDescription = Field(
         description="The description of the product"
     )
     price: UnifiedProductPrice = Field(description="The price of the products")
+    status: bool = Field(description="Indicates if the product is active or not")
     categories: list[str | None] = Field(
         description="The list of the product's categories"
     )
