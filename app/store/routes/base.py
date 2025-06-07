@@ -121,7 +121,7 @@ async def route_store_edit(
         setattr(store, field, value)
 
     # Edit auth keys
-    if InternalMagentoClient.verify_credentials(creds=store_in.auth_keys):
+    if await InternalMagentoClient.verify_credentials(creds=store_in.auth_keys):
         setattr(store, "auth_keys", store_in.auth_keys.model_dump())
     else:
         raise BadRequest("Invalid magento credentials")
