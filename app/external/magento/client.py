@@ -188,7 +188,9 @@ class InternalMagentoClient:
                                 if attr["attribute_code"] == "description"
                             ][0]["value"],
                         },
-                        "price": {"currency": "USD", "price": prod["price"]},
+                        "price": {"currency": "USD", "price": prod["price"]}
+                        if prod.get("price")
+                        else None,
                         "status": True if prod["status"] == 1 else False,
                         "categories": [
                             await self.get_category_name(

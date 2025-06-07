@@ -51,7 +51,7 @@ class UnifiedProduct(BaseModel):
     description: UnifiedProductDescription = Field(
         description="The description of the product"
     )
-    price: UnifiedProductPrice = Field(description="The price of the products")
+    price: UnifiedProductPrice | None = Field(description="The price of the product")
     status: bool = Field(description="Indicates if the product is active or not")
     categories: list[str | None] = Field(
         description="The list of the product's categories"
